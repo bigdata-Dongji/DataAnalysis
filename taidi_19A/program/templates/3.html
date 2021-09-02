@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../static/echarts.js"></script>
+	</head>
+	<body>
+		<div id="main" style="width: 800px;height: 600px;"></div>
+		<script>
+			var myChart=echarts.init(document.getElementById('main'));
+			var option={
+				title:{
+					text:'',
+					x:'center',
+					subtext:'',
+					textStyle:{
+						color:'black'
+					}
+				},
+				tooltip:{},
+				legend:{},
+				grid:{},
+				xAxis:{
+					name:'周',
+					data:{{ label |safe}}
+				},
+				yAxis:{
+					name:'',
+				},
+				series:[{
+					type:'bar',
+					data:{{ data1 |safe}},
+					label:{
+						show:true,
+					},					
+				}]
+			}
+			myChart.setOption(option);
+		</script>
+	</body>
+</html>

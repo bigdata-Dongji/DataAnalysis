@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../static/echarts.js"></script>
+	</head>
+	<body>
+		<div id="main" style="width: 1800px;height: 800px;"></div>
+		<script>
+			var myChart=echarts.init(document.getElementById('main'));
+			var names={{ names |safe}};
+			var data1={{ data1 |safe}};
+			var data2={{ data2 |safe}};
+			var data3={{ data3 |safe}};
+			var data4={{ data4 |safe}};
+			var seriesData1=[];
+			var seriesData2=[];
+			var seriesData3=[];
+			var seriesData4=[];
+			for (var i=0;i<names.length;i++){
+				seriesData1.push({name:names[i],value:data1[i]});
+			}
+			for (var i=0;i<names.length;i++){
+				seriesData2.push({name:names[i],value:data2[i]});
+			}
+			for (var i=0;i<names.length;i++){
+				seriesData3.push({name:names[i],value:data3[i]});
+			}
+			for (var i=0;i<names.length;i++){
+				seriesData4.push({name:names[i],value:data4[i]});
+			}
+			console.log(seriesData1);
+			console.log(seriesData2);
+			var option={
+				title:{
+					text:'',
+					x:'center',
+					subtext:'',
+					textStyle:{
+						color:'black'
+					}
+				},
+				tooltip:{},
+				legend:{},
+				grid:{},
+				
+				series:[{
+					name:'1月',
+					type:'pie',
+					data:seriesData1,
+					radius:['0%','30%'],
+					center:['30%','30%'],
+					label:{
+						show:true,
+					},
+					
+				},
+				{
+					name:'2月',
+					type:'pie',
+					data:seriesData2,
+					radius:['0%','30%'],
+					center:['60%','30%'],
+					label:{
+						show:true,
+					},
+					
+				},
+				{
+					name:'3月',
+					type:'pie',
+					data:seriesData3,
+					radius:['0%','30%'],
+					center:['30%','80%'],
+					label:{
+						show:true,
+					},
+					
+				},
+				{
+					name:'4月',
+					type:'pie',
+					data:seriesData4,
+					radius:['0%','30%'],
+					center:['60%','80%'],
+					label:{
+						show:true,
+					},
+					
+				}]
+			}
+			myChart.setOption(option);
+		</script>
+	</body>
+</html>

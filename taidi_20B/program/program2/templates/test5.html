@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+    <div id="main" style="100%; height: 100%;"></div>
+</body>
+<script src="../static/js/echarts.js"></script>
+<script src="../static/js/hubei.js"></script>    
+<script src="../static/js/world.js"></script>    
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var option = {
+    		backgroundColor: "#394056",
+            title: {
+                text : '湖北累计感染况状',
+                textStyle:{
+    				color:'white'
+    			}
+            },
+
+            
+            visualMap: {
+                             min: 0,
+                             max: 55000,
+                             left: 'left',
+                             top: 'bottom',
+                             text: ['高', '低'],
+                             // 文本，默认为数值文本
+                             //calculable: true,
+                             //color: ['blue', 'blue']
+                             //图例颜色
+                             pieces: [{
+                                 min: 5000,
+                                 max: 55000,
+                                 label: ">5000",
+                                 color: "#2E0000"
+                             }, {
+                                 min: 1000,
+                                 max: 4999,
+                                 label: "1000-4999",
+                                 color: "#740001"
+            
+                             }, {
+                                 min: 500,
+                                 max: 999,
+                                 label: "500-999",
+                                 color: "#A50002"
+                             }, {
+                                 min: 100,
+                                 max: 499,
+                                 label: "100-499",
+                                 color: "#EA0002"
+                             }, {
+                                 min: 10,
+                                 max: 99,
+                                 label: "10-99",
+                                 color: "#F25669"
+                             }, {
+                                 min: 0,
+                                 max: 9,
+                                 label: "0-9",
+                                 color: "#ffffff"
+            
+                             }],
+                             orient: 'vertical',
+                             itemWidth: 25,
+                             itemHeight: 15,
+                             showLabel: true,
+                             seriesIndex: [0],
+                             textStyle: {
+                                 color: '#000'
+                             }
+                         },
+    					 tooltip:{},
+                         toolbox: {
+                             show: true,
+                             orient: 'vertical',
+                             left: 'right',
+                             top: 'center',
+                             feature: {
+                                 dataView: {
+                                     readOnly: false
+                                 },
+                                 restore: {},
+                                 saveAsImage: {}
+                             }
+                         },
+            series : [
+                {
+                    name: '累计确诊',
+                    type: 'map',
+                    mapType: '湖北',        //改成对应省份名
+                    selectedMode : 'single',
+                    itemStyle:{
+                        normal:{label:{show:true}},
+                        emphasis:{label:{show:true}}
+                    },
+    　　　　　　　　　　//这里的data是辅助改变某个地区颜色的，如果你不需要完全可以不加
+                    data:[
+                        {name: '十堰市',value: 672},
+    					{name: '襄阳市',value: 1175},
+    					{name: '随州市',value: 1307},
+    					{name: '神农架林区',value: 11},
+    					{name: '恩施土家族苗族自治州',value: 252},
+    					{name: '宜昌市',value: 931},
+    					{name: '荆门市',value: 928},
+    					{name: '天门市',value: 496},
+    					{name: '潜江市',value: 198},
+    					{name: '荆州市',value: 1580},
+    					{name: '仙桃市',value: 575},
+    					{name: '武汉市',value: 50340,label:{normal:{textStyle:{color:'yellow'}}}},
+    					{name: '黄冈市',value: 2907},
+    					{name: '鄂州市',value: 1394},
+    					{name: '咸宁市',value: 836},
+    					{name: '黄石市',value: 1015},
+    					{name: '孝感市',value: 3518}
+                        
+                    ]
+                }
+            ]
+        };
+    myChart.setOption(option);
+                    
+</script>
+</html>

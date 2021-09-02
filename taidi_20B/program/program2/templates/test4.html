@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../static/js/echarts.js"></script>
+	</head>
+	<body>
+		<div id="main" style="width: 2000px;height: 900px;"></div>
+		<script>
+			var myChart=echarts.init(document.getElementById('main'));
+			option={
+				backgroundColor:'#394056',
+				title:{
+						text:'累计确诊top6国家',
+						x:'center',
+						textStyle:{
+							color:'white'
+						}
+					},
+					tooltip:{},
+					grid:{
+						containLabel:true,
+						
+					},
+					xAxis:{
+						data:['美国', '巴西', '俄罗斯', '印度', '英国', '秘鲁'],
+						name:'',
+						axisLabel:{color:'white'},
+						axisLine:{show:false},
+						axisTick:{show:false},
+						
+					},
+					yAxis:{
+						name:'人数/人',
+						axisLabel:{
+							color:'white',
+						},
+						axisLine:{show:false},
+						axisTick:{show:false},
+						splitLine:{show:false},
+						nameTextStyle:{
+							color:'white'
+						}
+						
+					},
+					series:[{
+						name:'累计确诊',
+						type:'bar',
+						data:[
+							{value:2683000,
+						itemStyle:{
+							color:'red'
+						}}, 1370488, 647849, 566840, 312654, 282365],
+						label:{
+							show:true,
+							position:'top'
+						},
+						itemStyle:{
+							color:'orange'
+						}
+					}]
+				}
+			myChart.setOption(option);
+		</script>
+	</body>
+</html>

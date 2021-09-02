@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新冠疫情可视化平台</title>
+	<link href="../static/css/main2.css" rel="stylesheet" />
+	<script src="../static/js/jquery.js"></script>
+	<script src="../static/js/echarts.js"></script>
+	<script src="../static/js/china.js"></script>
+	<script src="../static/js/echarts-wordcloud.js"></script>
+	<script src="../static/js/hubei.js"></script>   
+	<script src="../static/js/world.js"></script>
+	<script>
+	    $(window).load(function () {
+	        $(".loading").fadeOut()
+	    });
+	
+	    /****/
+	    $(document).ready(function () {
+	        var whei = $(window).width();
+	        $("html").css({fontSize: whei / 20});
+	        $(window).resize(function () {
+	            var whei = $(window).width();
+	            $("html").css({fontSize: whei / 20})
+	        });
+	    });
+	</script>
+</head>
+<body>
+	
+	<div class="loading">
+	    <div class="loadbox"><img src="../static/images/loading.gif"> 页面加载中...</div>
+	</div>
+	
+	<div id="header">
+	<div id="title"><h1>国际新冠疫情可视化平台</h1></div>
+	<div id="time"></div>
+	</div>
+	<div id="c1">
+				<div class="num">	<h1>累计确诊</h1>	</div>
+				<div class="num">	<h1>累计死亡</h1>	</div>
+				<div class="num">	<h1>累计治愈</h1>	</div>
+				<div class="num">	<h1>现有确诊</h1>	</div>
+				<div style="clear:both"></div>
+				<div class="txt">	<h2>10299157</h2>   </div>
+				<div class="txt">	<h2>504707</h2>	</div>
+				<div class="txt">	<h2>5092887</h2>	</div>
+				<div class="txt">	<h2>4701563</h2>	</div>
+				<div style="clear:both"></div>
+			</div>
+	
+	<div id="bar"><div class="border"></div></div>
+	<div id="pie"></div>
+	<div id="map"><div class="border"></div></div>
+	<div id="line"><div class="border"></div></div>
+	<div id="wordcloud"><div class="border"></div></div>
+	<div id="radar"><div class="border"></div></div>
+	
+	<script>
+	    var t = null;
+	    t = setTimeout(time, 1000);//開始运行
+	    function time() {
+	        clearTimeout(t);//清除定时器
+	        dt = new Date();
+	        var y = dt.getFullYear();
+	        var mt = dt.getMonth() + 1;
+	        var day = dt.getDate();
+	        var h = dt.getHours();//获取时
+	        var m = dt.getMinutes();//获取分
+	        var s = dt.getSeconds();//获取秒
+	        document.getElementById("time").innerHTML = y + "/" + mt + "/" + day + " " + h + "时" + m + "分" + s + "秒";
+	        t = setTimeout(time, 1000); //设定定时器，循环运行
+	    }
+	
+	</script>
+	<!-- <script src="../static/js/line.js"></script> -->
+	<!-- <script src="../static/js/pie_chart.js"></script> -->
+	<!-- <script src="../static/js/word.js"></script> -->
+	<!-- <script src="../static/js/bar.js"></script> -->
+	<!-- <script src="../static/js/radar.js"></script> -->
+	<!-- <script src="../static/js/hmap.js"></script> -->
+	<!-- <script src="../static/js/controller.js"></script> -->
+	
+	<!-- top6累计 -->
+	<script>
+		var myChart=echarts.init(document.getElementById('line'));
+		option={
+			title:{
+				text:'累计确诊top6国家',
+				x:'center',
+				textStyle:{
+					color:'white'
+				}
+			},
+			tooltip:{},
+			grid:{
+				containLabel:true,
+				
+			},
+			xAxis:{
+				data:['美国', '巴西', '俄罗斯', '印度', '英国', '秘鲁'],
+				name:'',
+				axisLabel:{color:'white'},
+				axisLine:{show:false},
+				axisTick:{show:false},
+				
+			},
+			yAxis:{
+				name:'人数/人',
+				axisLabel:{
+					color:'white',
+					formatter: function (value) {
+					                if (value >= 10000 ) {
+					                    value = value / 10000 + "w";
+					                } 
+					                return value;
+					            }
+				},
+				axisLine:{show:false},
+				axisTick:{show:false},
+				splitLine:{show:false},
+				nameTextStyle:{
+					color:'white'
+				}
+				
+			},
+			series:[{
+				name:'累计确诊',
+				type:'bar',
+				data:[
+					{value:2683000,
+				itemStyle:{
+					color:'red'
+				}}, 1370488, 647849, 566840, 312654, 282365],
+				label:{
+					show:true,
+					position:'top'
+				},
+				itemStyle:{
+					color:'orange'
+				}
+			}]
+		}
+		
+		myChart.setOption(option);
+	</script>
+	
+	
+	<!-- 治愈、死亡趋势折线图 -->
+	<script>
+		var pie_chart=echarts.init(document.getElementById('pie'));
+		
+		option={
+			title:{
+				text:'累计治愈与死亡人数趋势',
+				x:'center',
+				textStyle:{
+					color:'white'
+				}
+			},
+			tooltip:{},
+			legend:{
+				x:'75%',
+				y:'3%',
+				textStyle:{
+					color:'white'
+				}
+			},
+			grid:{containLabel:true},
+			xAxis:{
+				data:['0127', '0128', '0129', '0130', '0131', '0201', '0202', '0203', '0204', '0205', '0206', '0207', '0208', '0209', '0210', '0211', '0212', '0213', '0214', '0215', '0216', '0217', '0218', '0219', '0220', '0221', '0222', '0223', '0224', '0225', '0226', '0227', '0228', '0229', '0301', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317', '0318', '0319', '0320', '0321', '0322', '0323', '0324', '0325', '0326', '0327', '0328', '0329', '0330', '0331', '0401', '0402', '0403', '0404', '0405', '0406', '0407', '0408', '0409', '0410', '0411', '0412', '0413', '0414', '0415', '0416', '0417', '0418', '0419', '0420', '0421', '0422', '0423', '0424', '0425', '0426', '0427', '0428', '0429', '0430', '0501', '0502', '0503', '0504', '0505', '0506', '0507', '0508', '0509', '0510', '0511', '0512', '0513', '0514', '0515', '0516', '0517', '0518', '0519', '0520', '0521', '0522', '0523', '0524', '0525', '0526', '0527', '0528', '0529', '0530', '0531', '0601', '0602', '0603', '0604', '0605', '0606', '0607', '0608', '0609', '0610', '0611', '0612', '0613', '0614', '0615', '0616', '0617', '0618', '0619', '0620', '0621', '0622', '0623', '0624', '0625', '0626', '0627', '0628', '0629', '0630'],
+				name:'日期',
+				axisLabel:{color:'white'},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{color:'white'},
+			},
+			yAxis:{
+				name:'人数/人',
+				axisLabel:{
+					color:'white',
+					formatter: function (value) {
+					                if (value >= 10000 ) {
+					                    value = value / 10000 + "w";
+					                } 
+					                return value;
+					            }
+					},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{color:'white'},
+			},
+			color:['#00ff00','grey'],
+			series:[{
+				name:'累计治愈',
+				type:'line',
+				data:[3, 6, 6, 8, 8, 9, 9, 9, 9, 9, 9, 11, 19, 21, 24, 36, 50, 62, 70, 78, 107, 114, 118, 144, 144, 173, 173, 192, 206, 227, 236, 324, 345, 441, 523, 561, 895, 1046, 1168, 1678, 2622, 3155, 3317, 4535, 5271, 5687, 6438, 6646, 9035, 10197, 11961, 13340, 15229, 18017, 21398, 23175, 26793, 28761, 36885, 40683, 48162, 63556, 68363, 77269, 84275, 92726, 108497, 123666, 137259, 156678, 165743, 174924, 234782, 250917, 275000, 301992, 321785, 346937, 370230, 406827, 431422, 464088, 487742, 512366, 550367, 574903, 608242, 632602, 665236, 704342, 738750, 760295, 801097, 836430, 872945, 935129, 987173, 1021999, 1054740, 1094126, 1125507, 1166898, 1199365, 1242492, 1288472, 1325261, 1377574, 1409404, 1464876, 1503574, 1543250, 1617963, 1655859, 1706532, 1754110, 1754293, 1881497, 1979514, 2032133, 2075332, 2145746, 2198801, 2276670, 2334992, 2400109, 2456450, 2529292, 2621244, 2664958, 2731972, 2800890, 2862541, 2964729, 3001144, 3083603, 3145718, 3262718, 3325312, 3382808, 3482462, 3542224, 3642257, 3731018, 3810388, 3860453, 3965295, 4060898, 4123477, 4232221, 4331030, 4428886, 4510379, 4616894, 4752965, 4797967, 5092887],
+				
+			},
+			{
+				name:'累计死亡',
+				type:'line',
+				data:[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 8, 11, 14, 22, 32, 39, 52, 63, 68, 94, 117, 140, 183, 234, 269, 358, 436, 549, 753, 944, 1213, 1561, 1916, 2198, 2841, 3435, 4223, 4944, 5997, 7149, 8572, 10310, 12024, 13850, 16335, 18688, 21757, 25362, 28677, 31528, 35762, 40484, 45506, 50399, 57168, 62821, 67759, 73225, 79553, 85327, 93190, 100920, 107001, 112204, 118244, 124842, 135381, 142665, 151137, 157114, 161816, 168086, 174557, 180317, 188157, 193991, 199192, 202378, 207070, 213395, 223466, 229088, 234820, 239196, 242857, 247280, 253329, 259580, 264994, 270494, 275062, 278355, 282609, 288089, 293436, 298608, 303763, 307468, 310849, 313962, 318730, 318730, 328958, 333673, 337263, 339807, 343526, 347710, 352386, 356984, 362034, 365800, 368700, 372590, 377441, 382596, 388050, 392745, 396416, 399941, 403189, 408379, 413711, 417977, 423021, 427035, 430163, 433691, 440734, 445465, 450327, 455996, 460150, 464001, 467771, 473053, 478186, 485136, 489661, 494849, 497545, 504707],
+				
+			}]
+		}
+		
+		pie_chart.setOption(option);
+		
+		
+		
+	</script>
+	
+	<!-- 美国最新7天累计确诊 -->
+	<script>
+		var myChart=echarts.init(document.getElementById('radar'));
+		option={
+			title:{
+				text:'美国最新7日累计确诊',
+				x:'center',
+				textStyle:{
+					color:'white'
+				}
+			},
+			tooltip:{},
+			grid:{
+				containLabel:true,
+				
+			},
+			xAxis:{
+				data:['0624', '0625', '0626', '0627', '0628', '0629', '0630'],
+				name:'日期',
+				axisLabel:{color:'white'},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{lineStyle:{color:'white'}},
+				nameTextStyle:{
+					color:'white'
+				}
+			},
+			yAxis:{
+				name:'人数/人',
+				axisLabel:{
+					color:'white',
+					formatter: function (value) {
+					                if (value >= 10000 ) {
+					                    value = value / 10000 + "w";
+					                } 
+					                return value;
+					            }
+				},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{lineStyle:{color:'white'}},
+				splitLine:{show:false},
+				nameTextStyle:{
+					color:'white'
+				}
+				
+			},
+			series:[{
+				name:'累计确诊',
+				type:'bar',
+				data:[2348956, 2382702, 2422555, 2467837, 2520984, 2549069, 2683000],
+				label:{
+					show:true,
+					position:'top'
+				},
+				itemStyle:{
+					color:'#aa5500'
+				}
+			}]
+		}
+		
+		
+		
+		myChart.setOption(option);
+	</script>
+	
+	
+	<!-- 累计确诊、现有确诊折线图 -->
+	<script>
+		var myChart=echarts.init(document.getElementById('wordcloud'));
+		option={
+			
+			
+			title:{
+				text:'累计确诊与现有确诊人数趋势',
+				x:'center',
+				textStyle:{
+					color:'white'
+				}
+			},
+			tooltip:{},
+			legend:{
+				x:'75%',
+				y:'3%',
+				textStyle:{
+					color:'white'
+				}
+			},
+			grid:{containLabel:true},
+			xAxis:{
+				data:['0127', '0128', '0129', '0130', '0131', '0201', '0202', '0203', '0204', '0205', '0206', '0207', '0208', '0209', '0210', '0211', '0212', '0213', '0214', '0215', '0216', '0217', '0218', '0219', '0220', '0221', '0222', '0223', '0224', '0225', '0226', '0227', '0228', '0229', '0301', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317', '0318', '0319', '0320', '0321', '0322', '0323', '0324', '0325', '0326', '0327', '0328', '0329', '0330', '0331', '0401', '0402', '0403', '0404', '0405', '0406', '0407', '0408', '0409', '0410', '0411', '0412', '0413', '0414', '0415', '0416', '0417', '0418', '0419', '0420', '0421', '0422', '0423', '0424', '0425', '0426', '0427', '0428', '0429', '0430', '0501', '0502', '0503', '0504', '0505', '0506', '0507', '0508', '0509', '0510', '0511', '0512', '0513', '0514', '0515', '0516', '0517', '0518', '0519', '0520', '0521', '0522', '0523', '0524', '0525', '0526', '0527', '0528', '0529', '0530', '0531', '0601', '0602', '0603', '0604', '0605', '0606', '0607', '0608', '0609', '0610', '0611', '0612', '0613', '0614', '0615', '0616', '0617', '0618', '0619', '0620', '0621', '0622', '0623', '0624', '0625', '0626', '0627', '0628', '0629', '0630'],
+				name:'日期',
+				axisLabel:{color:'white'},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{color:'white'},
+			},
+			yAxis:{
+				name:'人数/人',
+				axisLabel:{
+					color:'white',
+					formatter: function (value) {
+					                if (value >= 10000 ) {
+					                    value = value / 10000 + "w";
+					                } 
+					                return value;
+					            }
+					},
+				axisLine:{lineStyle:{color:'white'}},
+				axisTick:{color:'white'},
+			},
+			color:['#ff0000','#aa5500'],
+			series:[{
+				name:'累计确诊',
+				type:'line',
+				data:[40, 53, 71, 83, 111, 130, 148, 149, 175, 196, 216, 249, 288, 298, 308, 319, 326, 341, 353, 360, 722, 829, 917, 1027, 1095, 1225, 1528, 1884, 2281, 2567, 3070, 3923, 4783, 6305, 7517, 9576, 11931, 13701, 15281, 19711, 22730, 26261, 30099, 35373, 39623, 46799, 57079, 65224, 78774, 91075, 106877, 123296, 146970, 168844, 202503, 237153, 269857, 309289, 354046, 402158, 465286, 537014, 599346, 651713, 716156, 791562, 868994, 945779, 1028647, 1115067, 1176318, 1255258, 1330491, 1411241, 1495383, 1592299, 1670797, 1742072, 1815657, 1886463, 1965324, 2059508, 2142887, 2224343, 2298003, 2375334, 2456137, 2524553, 2606423, 2698932, 2783572, 2850110, 2918422, 2991461, 3068284, 3154654, 3247977, 3321848, 3395243, 3477980, 3560054, 3653464, 3737381, 3838149, 3930716, 4010000, 4084444, 4166144, 4259252, 4355069, 4448400, 4539370, 4620116, 4709616, 4777545, 4786381, 4985182, 5125125, 5220152, 5311329, 5409375, 5503152, 5600048, 5722171, 5843816, 5970626, 6079585, 6180229, 6301221, 6419737, 6547726, 6677702, 6806952, 6925957, 7025514, 7153026, 7298442, 7418631, 7577407, 7707895, 7831488, 7945473, 8090186, 8256678, 8384745, 8578992, 8737955, 8869190, 9015751, 9170410, 9335219, 9521231, 9708862, 9913581, 10041395, 10299157],
+				
+			},
+			{
+				name:'现有确诊',
+				type:'line',
+				data:[37, 47, 65, 75, 103, 121, 138, 139, 165, 186, 206, 237, 268, 276, 283, 282, 275, 277, 281, 279, 612, 712, 796, 880, 943, 1041, 1341, 1670, 2043, 2301, 2782, 3536, 4370, 5770, 6877, 8875, 10853, 12421, 13844, 17675, 19672, 22557, 26029, 29894, 33139, 39551, 48725, 56380, 66898, 77443, 90693, 105012, 125744, 143678, 172533, 203668, 231040, 266678, 300826, 342787, 395367, 448096, 502306, 542916, 596119, 658352, 714991, 771714, 834220, 895568, 942816, 1007109, 1016156, 1074997, 1127193, 1189387, 1242011, 1282931, 1327183, 1354794, 1398521, 1452755, 1504008, 1554863, 1585820, 1632345, 1673338, 1711634, 1753030, 1800599, 1845630, 1887437, 1910255, 1941636, 1971873, 1990437, 2025984, 2060653, 2097646, 2136574, 2181218, 2226986, 2273022, 2325163, 2367182, 2406384, 2424261, 2468651, 2500940, 2552887, 2601387, 2613939, 2653408, 2689122, 2704705, 2713358, 2774727, 2811938, 2850756, 2896190, 2920103, 2956641, 2970992, 3030195, 3081673, 3148376, 3181593, 3186395, 3258822, 3305169, 3358786, 3422416, 3445807, 3524872, 3538722, 3598929, 3622013, 3675342, 3771578, 3798398, 3859101, 3869525, 3918434, 4000825, 4073965, 4157701, 4216907, 4281712, 4315759, 4366327, 4428147, 4525716, 4602307, 4665767, 4745883, 4701563],
+				
+			}]
+		
+				
+		}
+			
+		myChart.setOption(option);
+	</script>
+	
+	<!-- map -->
+	<script>
+			    myChart=echarts.init(document.getElementById('map'))
+				
+				
+				
+				 var nameMap = {}
+				
+				option = {
+				    timeline: {
+				        axisType: 'category',
+				        orient: 'vertical',
+				        autoPlay: true,
+				        inverse: true,
+				        playInterval: 5000,
+				        left: null,
+				        right: -105,
+				        top: 20,
+				        bottom: 20,
+				        width: 46,
+				        data: ['2016', ]
+				    },
+				    baseOption: {
+				        visualMap: {
+				                         min: 0,
+				                         max: 55000,
+				                         left: 'left',
+				                         top: 'bottom',
+				                         text: ['高', '低'],
+				                         // 文本，默认为数值文本
+				                         //calculable: true,
+				                         //color: ['blue', 'blue']
+				                         //图例颜色
+				                         pieces: [{
+				                             min: 1840000,
+				                             
+				                             label: ">1840000",
+				                             color: "#2E0000"
+				                         }, {
+				                             min: 300000,
+				                             max: 1000000,
+				                             label: "30w-100w",
+				                             color: "#740001"
+				        
+				                         }, {
+				                             min: 50000,
+				                             max: 300000,
+				                             label: "5w-30w",
+				                             color: "#A50002"
+				                         }, {
+				                             min: 5000,
+				                             max: 50000,
+				                             label: "0.5w-5w",
+				                             color: "#EA0002"
+				                         }, {
+				                             min: 0,
+				                             max: 5000,
+				                             label: "0-5000",
+				                             color: "#F25669"
+				                         }, {
+				                             min: 0,
+				                             max: 0,
+				                             label: "0",
+				                             color: "#ffffff"
+				        
+				                         }],
+				                         orient: 'vertical',
+				                         itemWidth: 25,
+				                         itemHeight: 15,
+				                         showLabel: true,
+				                         seriesIndex: [0],
+				                         textStyle: {
+				                             color: '#000'
+				                         }
+				                     },
+				        series: [{
+				            type: 'map',
+				            map: 'world',
+				            roam: true,
+				            itemStyle: {
+				                emphasis: {
+				                    label: {
+				                        show: false
+				                    }
+				                }
+				            },
+				            nameMap: nameMap
+				
+				        }]
+				    },
+				
+				    options: [{
+				        title: {
+				            text: '世界疫情现有确诊分布',
+				            // left: 'center',
+				            top: 'top',
+							textStyle:{
+								color:'white'
+							}
+				        },
+				        tooltip: {
+				            trigger: 'item',
+				            formatter: function(params) {
+				                var value = (params.value);
+				                //value = value.toFixed(5);toFixed(3)控制小数位数      
+				                value = value;
+				                //var abc=(params.abc);
+				                return params.name + ' : ' + value;
+				            }
+				        },
+				        series: {
+				            data: [{name:"Bhutan",value:76},{name:"Timor-Leste",value:24},{name:"Central African Republic",value:2793},{name:"Denmark",value:2503},{name:"Ukraine",value:23547},{name:"Uzbekistan",value:2769},{name:"Uganda",value:754},{name:"Uruguay",value:84},{name:"Chad",value:792},{name:"Yemen",value:469},{name:"Armenia",value:11051},{name:"Israel",value:6904},{name:"Iraq",value:22338},{name:"Iran",value:28087},{name:"Belize",value:22},{name:"Cape Verde",value:877},{name:"Russia",value:225879},{name:"Bulgaria",value:1997},{name:"Croatia",value:463},{name:"Guam",value:235},{name:"Gambia",value:41},{name:"Iceland",value:73},{name:"Guinea",value:1029},{name:"Guinea-Bissau",value:1275},{name:"Liechtenstein",value:13},{name:"Democratic Republic of the Congo",value:749},{name:"Democratic Republic of the Congo",value:5442},{name:"Libya",value:545},{name:"Liberia",value:649},{name:"Canada",value:28174},{name:"Ghana",value:4361},{name:"Gabon",value:2842},{name:"Hungary",value:876},{name:"爱尔兰",value:1},{name:"马其顿",value:3496},{name:"马里亚纳群岛",value:28},{name:"South Sudan",value:1708},{name:"South Africa",value:71121},{name:"Botswana",value:174},{name:"Qatar",value:14411},{name:"Rwanda",value:455},{name:"Luxembourg",value:343},{name:"India",value:215126},{name:"Indonesia",value:28703},{name:"Guatemala",value:12568},{name:"Ecuador",value:45035},{name:"Eritrea",value:152},{name:"Syria",value:206},{name:"Cuba",value:1721},{name:"Kyrgyzstan",value:2725},{name:"Djibouti",value:1267},{name:"Kazakhstan",value:8320},{name:"Colombia",value:51866},{name:"Costa Rica",value:1686},{name:"Cameroon",value:2179},{name:"Turkey",value:21689},{name:"Saint Kitts and Nevis",value:15},{name:"Saint Lucia",value:19},{name:"S?o Tomé and Principe",value:480},{name:"St. Barthelemy",value:3},{name:"圣巴泰勒米",value:6},{name:"St. Vin. and Gren.",value:29},{name:"St. Pierre and Miquelon",value:1},{name:"Saint Martin Island",value:39},{name:"San Marino",value:669},{name:"Guyana",value:191},{name:"United Republic of Tanzania",value:321},{name:"Egypt",value:46014},{name:"Ethiopia",value:3313},{name:"Tajikistan",value:1334},{name:"Senegal",value:2249},{name:"Republic of Serbia",value:3971},{name:"Sierra Leone",value:430},{name:"Cyprus",value:464},{name:"Seychelles",value:77},{name:"Mexico",value:44174},{name:"Togo",value:494},{name:"Dominica",value:18},{name:"Dominican Rep.",value:13981},{name:"Dominican Rep.",value:12},{name:"Austria",value:604},{name:"Venezuela",value:3439},{name:"Bangladesh",value:82238},{name:"Angola",value:175},{name:"Angola",value:3},{name:"Antigua and Barb.",value:62},{name:"Andorra",value:331},{name:"Nicaragua",value:1940},{name:"Nigeria",value:15158},{name:"Niger",value:273},{name:"Nepal",value:10085},{name:"Palestine",value:1794},{name:"Bahamas",value:93},{name:"Pakistan",value:106530},{name:"Barbados",value:90},{name:"Papua New Guinea",value:11},{name:"Paraguay",value:1189},{name:"Panama",value:14696},{name:"Bahrain",value:5227},{name:"Brazil",value:578255},{name:"Burkina Faso",value:80},{name:"Burundi",value:165},{name:"Greece",value:1726},{name:"Cura?ao",value:23},{name:"Cayman Is.",value:194},{name:"Germany",value:6186},{name:"Italy",value:16496},{name:"Latvia",value:622},{name:"Norway",value:445},{name:"Czech republic",value:3552},{name:"Moldova",value:6636},{name:"Morocco",value:3232},{name:"Morocco",value:93},{name:"Brunei",value:7},{name:"Fiji",value:18},{name:"Swaziland",value:423},{name:"Slovakia",value:175},{name:"Slovenia",value:135},{name:"Sri Lanka",value:605},{name:"Singapore",value:6718},{name:"New Caledonia",value:21},{name:"New Zealand",value:147},{name:"Japan",value:1228},{name:"Chile",value:34270},{name:"Cambodia",value:19},{name:"Cambodia",value:239},{name:"Cambodia",value:23},{name:"Greenland",value:13},{name:"Georgia",value:207},{name:"Georgia",value:12},{name:"Belgium",value:34688},{name:"Mauritania",value:2612},{name:"Mauritius",value:6},{name:"Saudi Arabia",value:58406},{name:"France",value:58448},{name:"France",value:3449},{name:"Fr. Polynesia",value:89},{name:"Faeroe Is.",value:187},{name:"Poland",value:11921},{name:"Puerto Rico",value:7036},{name:"Puerto Rico",value:1802},{name:"Thailand",value:138},{name:"Jersey",value:288},{name:"Zimbabwe",value:432},{name:"Honduras",value:14761},{name:"Haiti",value:4971},{name:"Australia",value:655},{name:"Ireland",value:355},{name:"Estonia",value:643},{name:"Jamaica",value:676},{name:"Turks and Caicos Is.",value:15},{name:"Trinidad and Tobago",value:118},{name:"Bolivia",value:21548},{name:"Sweden",value:57386},{name:"Switzerland",value:770},{name:"Switzerland",value:168},{name:"Switzerland",value:519},{name:"Switzerland",value:6},{name:"Belarus",value:16966},{name:"Bermuda",value:137},{name:"Bermuda",value:176},{name:"Bermuda",value:13},{name:"Kuwait",value:8811},{name:"Comoros",value:286},{name:"Ivory Coast",value:5391},{name:"Ivory Coast",value:30},{name:"Peru",value:101702},{name:"Tunisia",value:117},{name:"Lithuania",value:689},{name:"Somalia",value:1975},{name:"Jordan",value:282},{name:"Namibia",value:147},{name:"Myanmar",value:77},{name:"Romania",value:6036},{name:"United States of America",value:1848252},{name:"U.S. Virgin Is.",value:75},{name:"Laos",value:19},{name:"Kenya",value:4179},{name:"Kenya",value:21},{name:"Finland",value:270},{name:"Sudan",value:4672},{name:"Suriname",value:334},{name:"United Kingdom",value:268385},{name:"United Kingdom",value:12},{name:"United Kingdom",value:7},{name:"Netherlands",value:32174},{name:"Netherlands",value:7},{name:"Netherlands",value:63},{name:"Mozambique",value:629},{name:"Lesotho",value:27},{name:"Philippines",value:26015},{name:"El Salvador",value:5782},{name:"Portugal",value:14261},{name:"Mongolia",value:195},{name:"Montserrat",value:10},{name:"Spain",value:70248},{name:"Benin",value:827},{name:"Zambia",value:277},{name:"Eq. Guinea",value:1454},{name:"Vietnam",value:88},{name:"Vietnam",value:125},{name:"Azerbaijan",value:7596},{name:"Afghanistan",value:16555},{name:"Algeria",value:2992},{name:"Albania",value:1024},{name:"Oman",value:16469},{name:"Argentina",value:47412},{name:"Argentina",value:10786},{name:"Argentina",value:98},{name:"South Korea",value:981},{name:"South Korea",value:441},{name:"South Korea",value:312},{name:"Malawi",value:950},{name:"Malawi",value:228},{name:"Malaysia",value:195},{name:"Malaysia",value:2505},{name:"Malta",value:294},{name:"Madagascar",value:1152},{name:"Mali",value:601},{name:"Lebanon",value:561},{name:"Lebanon",value:155},{name:"China",value:1170},]
+				
+				        }
+				    }, ]
+				};
+				myChart.setOption(option)
+			</script>
+</body>
+</html>
